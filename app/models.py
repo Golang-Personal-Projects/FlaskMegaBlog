@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from hmac import digest
 from typing import Optional
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -6,6 +7,7 @@ from app import  db
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship, WriteOnlyMapped
 from app import login
+from hashlib import md5
 
 class User(db.Model, UserMixin):
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -13,6 +15,8 @@ class User(db.Model, UserMixin):
     email: Mapped[str] = mapped_column(String(120), index=True, unique=True)
     password_hash: Mapped[Optional[str]] = mapped_column(String(256))
     posts: WriteOnlyMapped["Post"] = relationship(back_populates="author")
+    about_me: Mapped[Optional[str]] = mapped_column(String(140))
+    last_seen: Mapped[Optional[datetime]] = mapped_column(default=lambda : datetime.now(tz=timezone.utc))
 
     def __repr__(self):
         return "User {}".format(self.username)
@@ -23,6 +27,9 @@ class User(db.Model, UserMixin):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def avatar(self, size):
+        digest = md5(self.email.lower().encode("utf-8")).hexdigest()
+        return f"https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}"
 
 class Post(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
