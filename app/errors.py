@@ -1,7 +1,6 @@
 from app import db
 from flask import  render_template
 
-
 def error_routes(app):
     @app.errorhandler(404)
     def not_found_error(error):

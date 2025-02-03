@@ -4,7 +4,7 @@ from flask_login import UserMixin
 from sqlalchemy.dialects.mysql import INTEGER
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import  db
-from sqlalchemy import String, ForeignKey, Table, Column, func, select
+from sqlalchemy import String, ForeignKey, Table, Column, func, select,or_
 from sqlalchemy.orm import Mapped, mapped_column, relationship, WriteOnlyMapped, aliased
 from app import login
 from hashlib import md5
@@ -48,7 +48,7 @@ class User(db.Model, UserMixin):
             self.following.add(user)
 
     def unfollow(self, user):
-        if self.following:
+        if self.is_following(user):
             self.following.remove(user)
 
     def is_following(self,user):
@@ -71,8 +71,11 @@ class User(db.Model, UserMixin):
         return (
             select(Post)
             .join(Post.author.of_type(Author))
-            .join(Post.author.of_type(Follower))
-            .where(Follower.id == self.id)
+            .join(Author.followers.of_type(Follower), isouter=True)
+            .where(or_(
+             Follower.id == self.id,
+             Author.id == self.id,))
+            .group_by(Post)
             .order_by(Post.timestamp.desc())
         )
 
