@@ -1,4 +1,4 @@
-from flask import render_template, current_app
+from flask import current_app
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from app import mail

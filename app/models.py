@@ -109,6 +109,7 @@ class Post(db.Model):
     timestamp: Mapped[datetime] = mapped_column(index=True, default=lambda: datetime.now(tz=timezone.utc))
     user_id: Mapped[int] = mapped_column(ForeignKey(User.id), index=True)
     author: Mapped[User] = relationship(back_populates="posts")
+    language: Mapped[Optional[str]] = mapped_column(String(5))
 
     def __repr__(self):
         return "<Post {}>".format(self.body)

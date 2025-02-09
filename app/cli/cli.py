@@ -1,8 +1,9 @@
 import os
 import click
+from  app.cli  import bp
 
 def create_cli(app):
-    @app.cli.group()
+    @bp.cli.group()
     def translate():
         """ Translation and localization commands. """
         pass
