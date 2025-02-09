@@ -20,10 +20,12 @@ class Base(DeclarativeBase):
         "pk": "pk_%(table_name)s",
     })
 
+
 db = SQLAlchemy(model_class=Base)
 migrate = Migrate()
 login = LoginManager()
 mail = Mail()
+
 
 def create_app():
     app = Flask(__name__)
@@ -61,7 +63,7 @@ def create_app():
                 secure = ()
             mail_handler = SMTPHandler(
                 mailhost=(app.config["MAIL_SERVER"], app.config["MAIL_PORT"]),
-                fromaddr= "noreply@" + app.config["MAIL_SERVER"],
+                fromaddr="noreply@" + app.config["MAIL_SERVER"],
                 toaddrs=app.config["ADMINS"], subject="Blog Log Failures",
                 credentials=auth, secure=secure)
             mail_handler.setLevel(logging.ERROR)
@@ -69,14 +71,15 @@ def create_app():
         if not os.path.exists("logs"):
             os.mkdir("logs")
         filehandler = RotatingFileHandler("logs/blog.log", maxBytes=10240, backupCount=10)
-        filehandler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]"))
+        filehandler.setFormatter(
+            logging.Formatter("%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]"))
         filehandler.setLevel(logging.INFO)
         app.logger.addHandler(filehandler)
 
         app.logger.setLevel(logging.INFO)
         app.logger.info("Blog startup")
 
-
     return app
 
-from  app import models
+
+from app import models

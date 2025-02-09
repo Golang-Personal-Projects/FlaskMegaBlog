@@ -5,11 +5,13 @@ from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 from app import db
 from app.models import User
 
+
 class LoginForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired()])
     password = PasswordField("Password", validators=[DataRequired()])
     remember_me = BooleanField("Remember Me")
     submit = SubmitField("Sign in")
+
 
 class RegistrationForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired()])
@@ -20,7 +22,7 @@ class RegistrationForm(FlaskForm):
 
     def validate_username(self, username):
         user = db.session.scalar(select(User).where(User.username == username.data))
-        if user is not  None:
+        if user is not None:
             raise ValidationError("Please use a different username")
 
     def validate_email(self, email):
@@ -29,9 +31,11 @@ class RegistrationForm(FlaskForm):
         if email is not None:
             raise ValidationError("Please use a different email address.")
 
+
 class ResetPasswordRequestForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
     submit = SubmitField("Request Password Reset")
+
 
 class ResetPasswordForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
