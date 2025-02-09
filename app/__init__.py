@@ -9,7 +9,7 @@ from config import Config
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 from flask_mail import Mail
-
+from flask_moment import Moment
 
 class Base(DeclarativeBase):
     metadata = MetaData(naming_convention={
@@ -25,7 +25,7 @@ db = SQLAlchemy(model_class=Base)
 migrate = Migrate()
 login = LoginManager()
 mail = Mail()
-
+moment = Moment()
 
 def create_app():
     app = Flask(__name__)
@@ -43,6 +43,9 @@ def create_app():
 
     # Initialize mail
     mail.init_app(app=app)
+
+    # Initialize moment
+    moment.init_app(app=app)
 
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
