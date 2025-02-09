@@ -65,6 +65,9 @@ def create_app():
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
 
+    from app.cli import bp as cli_bp
+    app.register_blueprint(cli_bp)
+
     if not app.debug and not app.testing:
         if app.config["MAIL_SERVER"]:
             auth = None
@@ -91,8 +94,6 @@ def create_app():
         app.logger.setLevel(logging.INFO)
         app.logger.info("Blog startup")
 
-    from app.cli import create_cli
-    create_cli(app=app)
 
     return app
 
