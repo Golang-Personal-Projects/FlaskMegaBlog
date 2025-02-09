@@ -1,13 +1,16 @@
+from crypt import methods
 from datetime import datetime, timezone
 from flask_babel import get_locale
 from flask_login import current_user, login_required
 from flask import render_template, flash, url_for, request, current_app, g
+from langdetect import detect, LangDetectException
 from sqlalchemy import select
 from werkzeug.utils import redirect
 from app.main.forms import EditProfile, EmptyForm, PostForm
 from app import db
 from app.models import User, Post
 from app.main import bp
+from app.translate import translate
 
 
 @bp.route("/", methods=["GET", "POST"])
@@ -16,7 +19,11 @@ from app.main import bp
 def index():
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(body=form.post.data, author=current_user)
+        try:
+            language = detect(form.post.data)
+        except LangDetectException:
+            language = ""
+        post = Post(body=form.post.data, author=current_user, language=language)
         db.session.add(post)
         db.session.commit()
         flash("Your post is now live!!")
@@ -117,3 +124,13 @@ def user(username):
     prev_url = url_for("user", username=user.username, page=posts.prev_num) if posts.prev_num else None
     form = EmptyForm()
     return render_template("user.html", user=user, posts=posts, form=form, prev_url=prev_url, next_url=next_url)
+
+@bp.route("/translate", methods=["POST"])
+@login_required
+def translate_text():
+    data = request.get_json()
+    return {
+        "text": translate(data['text'],
+                              data['source_language'],
+                              data['dest_language'])
+    }

@@ -21,7 +21,6 @@ class Base(DeclarativeBase):
         "pk": "pk_%(table_name)s",
     })
 
-
 db = SQLAlchemy(model_class=Base)
 migrate = Migrate()
 login = LoginManager()

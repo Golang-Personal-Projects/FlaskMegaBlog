@@ -13,3 +13,5 @@ class Config:
     SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
     POSTS_PER_PAGE = 3
     LANGUAGES = ["en", "es"]
+    MS_TRANSLATOR_KEY = os.environ.get('MS_TRANSLATOR_KEY')
+    MS_TRANSLATOR_API_ENDPOINT = "https://api.cognitive.microsofttranslator.com"
