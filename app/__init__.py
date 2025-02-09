@@ -10,7 +10,9 @@ import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 from flask_mail import Mail
 from flask_moment import Moment
-from flask_babel import  Babel, lazy_gettext as _l
+from flask_babel import Babel, lazy_gettext as _l
+from elasticsearch import Elasticsearch
+
 
 class Base(DeclarativeBase):
     metadata = MetaData(naming_convention={
@@ -20,6 +22,7 @@ class Base(DeclarativeBase):
         "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
         "pk": "pk_%(table_name)s",
     })
+
 
 db = SQLAlchemy(model_class=Base)
 migrate = Migrate()
@@ -68,6 +71,8 @@ def create_app():
     from app.cli import bp as cli_bp
     app.register_blueprint(cli_bp)
 
+    app.elasticsearch = Elasticsearch([app.config["ELASTICSEARCH_URL"]]) if app.config["ELASTICSEARCH_URL"] else None
+
     if not app.debug and not app.testing:
         if app.config["MAIL_SERVER"]:
             auth = None
@@ -94,9 +99,7 @@ def create_app():
         app.logger.setLevel(logging.INFO)
         app.logger.info("Blog startup")
 
-
     return app
 
 
 from app import models
-
