@@ -12,3 +12,4 @@ class Config:
     ADMINS = ['huskie.puppy05@gmail.com']
     SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
     POSTS_PER_PAGE = 3
+    LANGUAGES = ["en", "es"]

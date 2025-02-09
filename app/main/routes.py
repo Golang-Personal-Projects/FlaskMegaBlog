@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
+from flask_babel import get_locale
 from flask_login import current_user, login_required
-from flask import render_template, flash, url_for, request, current_app
+from flask import render_template, flash, url_for, request, current_app, g
 from sqlalchemy import select
 from werkzeug.utils import redirect
 from app.main.forms import EditProfile, EmptyForm, PostForm
@@ -34,6 +35,8 @@ def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.now(tz=timezone.utc)
         db.session.commit()
+
+    g.locale = str(get_locale())
 
 
 @bp.route("/edit_profile", methods=["GET", "POST"])
