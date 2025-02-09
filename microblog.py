@@ -2,6 +2,7 @@ from app import create_app, db
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 from app.models import User, Post
+from app import cli
 
 app = create_app()
 

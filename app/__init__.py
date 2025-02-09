@@ -1,5 +1,5 @@
 import os.path
-from flask import Flask
+from flask import Flask, request
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -10,6 +10,7 @@ import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 from flask_mail import Mail
 from flask_moment import Moment
+from flask_babel import  Babel, lazy_gettext as _l
 
 class Base(DeclarativeBase):
     metadata = MetaData(naming_convention={
@@ -26,6 +27,8 @@ migrate = Migrate()
 login = LoginManager()
 mail = Mail()
 moment = Moment()
+babel = Babel()
+
 
 def create_app():
     app = Flask(__name__)
@@ -40,12 +43,19 @@ def create_app():
     # Initialize Login
     login.init_app(app=app)
     login.login_view = "auth.login"
+    login.login_message = _l('Please log in to access this page.')
 
     # Initialize mail
     mail.init_app(app=app)
 
     # Initialize moment
     moment.init_app(app=app)
+
+    # Initialize Translator
+    def get_locale():
+        return request.accept_languages.best_match(app.config["LANGUAGES"])
+
+    babel.init_app(app=app, locale_selector=get_locale)
 
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
@@ -82,7 +92,11 @@ def create_app():
         app.logger.setLevel(logging.INFO)
         app.logger.info("Blog startup")
 
+    from app.cli import create_cli
+    create_cli(app=app)
+
     return app
 
 
 from app import models
+

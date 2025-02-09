@@ -1,0 +1,93 @@
+# Spanish translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-02-08 21:10-0500\n"
+"PO-Revision-Date: 2025-02-08 21:11-0500\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: es\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: app/__init__.py:46
+msgid "Please log in to access this page."
+msgstr "Por favor ingrese para acceder a esta página."
+
+#: app/templates/_post.html:14
+#, python-format
+msgid "%(username)s said %(when)s"
+msgstr "%(username)s dijo %(when)s"
+
+#: app/templates/edit.html:5
+msgid "Edit Profile"
+msgstr "Editar Perfil"
+
+#: app/templates/index.html:5
+#, python-format
+msgid "Hi, %(username)s!"
+msgstr "¡Hola, %(username)s!"
+
+#: app/templates/index.html:27 app/templates/user.html:39
+msgid "Newer posts"
+msgstr "Artículos siguientes"
+
+#: app/templates/index.html:32 app/templates/user.html:44
+msgid "Older posts"
+msgstr "Artículos previos"
+
+#: app/templates/auth/login.html:4
+msgid "Sign In"
+msgstr "Ingresar"
+
+#: app/templates/auth/login.html:6
+msgid "New User?"
+msgstr "¿Usuario Nuevo?"
+
+#: app/templates/auth/login.html:6
+msgid "Click to Register!"
+msgstr "¡Haz click aquí para registrarte!"
+
+#: app/templates/auth/login.html:8
+msgid "Forgot Your Password?"
+msgstr "¿Te olvidaste tu contraseña?"
+
+#: app/templates/auth/login.html:9
+msgid "Click to Reset It"
+msgstr "Haz click aquí para pedir una nueva"
+
+#: app/templates/auth/register.html:5
+msgid "Register"
+msgstr "Nueva Contraseña"
+
+
+#: app/templates/auth/reset_password.html:4
+msgid "Reset Your Password"
+msgstr "Nueva Contraseña"
+
+#: app/templates/auth/reset_password_request.html:5
+msgid "Reset Password"
+msgstr "Nueva Contraseña"
+
+#: app/templates/errors/404.html:4
+msgid "Not Found"
+msgstr "Página No Encontrada"
+
+#: app/templates/errors/500.html:4
+msgid "An unexpected error has occurred"
+msgstr "Ha ocurrido un error inesperado"
+
+
+#: app/templates/errors/500.html:5
+msgid "The administrator has been notified. Sorry for the inconvenience!"
+msgstr "El administrador ha sido notificado. ¡Lamentamos la inconveniencia!"
+
+
