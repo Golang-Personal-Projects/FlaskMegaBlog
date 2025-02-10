@@ -1,4 +1,3 @@
-from crypt import methods
 from datetime import datetime, timezone
 from flask_babel import get_locale
 from flask_login import current_user, login_required
