@@ -6,6 +6,7 @@ from app.models import User, Post
 
 from config import Config
 
+
 class TestConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
@@ -31,7 +32,8 @@ class UserModelCase(unittest.TestCase):
 
     def test_avatar(self):
         u = User(username="john", email="john@example.com")
-        self.assertEqual(u.avatar(128), ("https://www.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?d=identicon&s=128"))
+        self.assertEqual(u.avatar(128),
+                         ("https://www.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?d=identicon&s=128"))
 
     def test_follow(self):
         u1 = User(username="john", email="john@aol.com")
@@ -52,7 +54,6 @@ class UserModelCase(unittest.TestCase):
         u2_followers = db.session.scalars(u2.followers.select()).all()
         self.assertEqual(u1_following[0].username, "susan")
         self.assertEqual(u2_followers[0].username, "john")
-
 
         u1.unfollow(u2)
         db.session.commit()
@@ -82,10 +83,10 @@ class UserModelCase(unittest.TestCase):
         db.session.commit()
 
         # setup the followers
-        u1.follow(u2) # john follows susan
-        u1.follow(u4) # john follows david
-        u2.follow(u3) # susan follows mary
-        u3.follow(u4) # mary follows david
+        u1.follow(u2)  # john follows susan
+        u1.follow(u4)  # john follows david
+        u2.follow(u3)  # susan follows mary
+        u3.follow(u4)  # mary follows david
         db.session.commit()
 
         # check the following posts of each user
@@ -97,6 +98,7 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(f2, [p2, p3])
         self.assertEqual(f3, [p3, p4])
         self.assertEqual(f4, [p4])
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

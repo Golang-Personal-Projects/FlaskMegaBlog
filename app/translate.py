@@ -2,18 +2,23 @@ import requests
 from flask_babel import _
 from flask import current_app
 
+
 def translate(text, source_lang, dest_lang):
-        if "MS_TRANSLATOR_KEY" not in current_app.config or not current_app.config['MS_TRANSLATOR_KEY'] or "MS_TRANSLATOR_API_ENDPOINT" not in current_app.config or not current_app.config['MS_TRANSLATOR_API_ENDPOINT']:
-            return _("Error: the translation service is not configured.")
-        auth = {
-            'Ocp-Apim-Subscription-Key': current_app.config['MS_TRANSLATOR_KEY'],
-            'Ocp-Apim-Subscription-Region': 'canadaeast',
-        }
+    if "MS_TRANSLATOR_KEY" not in current_app.config or not current_app.config[
+        'MS_TRANSLATOR_KEY'] or "MS_TRANSLATOR_API_ENDPOINT" not in current_app.config or not current_app.config[
+        'MS_TRANSLATOR_API_ENDPOINT']:
+        return _("Error: the translation service is not configured.")
 
-        url = "{}/translate?api-version=3.0&from={}&to={}".format(current_app.config['MS_TRANSLATOR_API_ENDPOINT'], source_lang, dest_lang)
+    auth = {
+        'Ocp-Apim-Subscription-Key': current_app.config['MS_TRANSLATOR_KEY'],
+        'Ocp-Apim-Subscription-Region': 'canadaeast',
+    }
 
-        response = requests.post(url=url,headers=auth, json=[{"Text": text}])
+    url = "{}/translate?api-version=3.0&from={}&to={}".format(current_app.config['MS_TRANSLATOR_API_ENDPOINT'],
+                                                              source_lang, dest_lang)
 
-        if response.status_code != 200:
-            return _('Error: the translation service failed.')
-        return response.json()[0]["translations"][0]["text"]
+    response = requests.post(url=url, headers=auth, json=[{"Text": text}])
+
+    if response.status_code != 200:
+        return _('Error: the translation service failed.')
+    return response.json()[0]["translations"][0]["text"]
