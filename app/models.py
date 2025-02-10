@@ -11,9 +11,8 @@ from app import login
 from hashlib import md5
 from time import time
 from flask import current_app
-from app.search import query_index
 from app.search import add_to_index, remove_from_index, query_index
-
+from elasticsearch.exceptions import NotFoundError
 followers = Table(
     "followers",
     db.metadata,
@@ -108,14 +107,18 @@ def load_user(id):
 class SearchableMixin(object):
     @classmethod
     def search(cls, expression, page, per_page):
-        ids, total = query_index(cls.__tablename__, expression, page, per_page)
-        if total == 0:
+        try:
+            ids, total = query_index(cls.__tablename__, expression, page, per_page)
+        except NotFoundError:
             return [], 0
-        when = []
-        for i in range(len(ids)):
-            when.append(ids[i], i)
-        query = select(cls).where(cls.id.in_(ids)).order_by(db.case(*when, value=cls.id))
-        return db.session.scalars(query), total
+        else:
+            if total == 0:
+                return [], 0
+            when = []
+            for i in range(len(ids)):
+                when.append((ids[i], i))
+            query = select(cls).where(cls.id.in_(ids)).order_by(db.case(*when, value=cls.id))
+            return db.session.scalars(query), total
 
     @classmethod
     def before_commit(cls, session):
@@ -140,7 +143,7 @@ class SearchableMixin(object):
 
     @classmethod
     def reindex(cls):
-        for obj in db.session.scalars(sa.select(cls)):
+        for obj in db.session.scalars(select(cls)):
             add_to_index(cls.__tablename__, obj)
 
 

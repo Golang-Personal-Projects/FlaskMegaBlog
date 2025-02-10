@@ -12,7 +12,7 @@ from app.models import User, Post
 from app.main import bp
 from app.translate import translate
 from app.main.forms import SearchForm
-
+from flask_babel import _
 
 @bp.route("/", methods=["GET", "POST"])
 @bp.route("/index", methods=["GET", "POST"])

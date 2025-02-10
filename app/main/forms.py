@@ -6,6 +6,7 @@ from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired, ValidationError, Length
 from app import db
 from app.models import User
+from flask_babel import  lazy_gettext as _l
 
 
 class EditProfile(FlaskForm):
