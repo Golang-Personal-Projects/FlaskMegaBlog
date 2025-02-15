@@ -6,7 +6,7 @@ from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired, ValidationError, Length
 from app import db
 from app.models import User
-from flask_babel import  lazy_gettext as _l
+from flask_babel import lazy_gettext as _l
 
 
 class EditProfile(FlaskForm):
@@ -43,3 +43,8 @@ class SearchForm(FlaskForm):
         if "meta" not in kwargs:
             kwargs["meta"] = {"csrf": False}
         super(SearchForm, self).__init__(*args, **kwargs)
+
+
+class MessageForm(FlaskForm):
+    message = TextAreaField(_l("Message"), validators=[DataRequired(), Length(min=0, max=140)])
+    submit = SubmitField(_l("Submit"))
