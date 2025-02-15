@@ -1,8 +1,11 @@
 import os.path
+
+import rq
 from flask import Flask, request
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from redis import Redis
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import MetaData
 from config import Config
@@ -72,6 +75,9 @@ def create_app():
     app.register_blueprint(cli_bp)
 
     app.elasticsearch = Elasticsearch([app.config["ELASTICSEARCH_URL"]]) if app.config["ELASTICSEARCH_URL"] else None
+
+    app.redis = Redis.from_url(app.config['REDIS_URL'])
+    app.task_queue = rq.Queue('microblog-tasks', connection=app.redis)
 
     if not app.debug and not app.testing:
         if app.config["MAIL_SERVER"]:

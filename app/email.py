@@ -7,20 +7,26 @@ from flask_mail import Message
 import app
 
 
-def sendmail(subject, sender, recipients, html_body):
+def sendmail(subject, sender, recipients, html_body, attachments=None, sync=False):
     message = Mail(
         from_email=sender,
         to_emails=recipients,
         subject=subject,
         html_content=html_body)
-    try:
-        sg = SendGridAPIClient(api_key=current_app.config["SENDGRID_API_KEY"])
-        response = sg.send(message)
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
-    except Exception as e:
-        print(f"error: {e}")
+    if attachments:
+        for attachment in attachments:
+            message.add_attachment(attachment=attachment)
+    if sync:
+        try:
+            sg = SendGridAPIClient(api_key=current_app.config["SENDGRID_API_KEY"])
+            response = sg.send(message)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
+        except Exception as e:
+            print(f"error: {e}")
+    else:
+        Thread(target=send_async_email, args=(app, message)).start()
 
 
 def send_email(subject, sender, recipients, text_body, html_body):
