@@ -1,3 +1,4 @@
+import time
 from datetime import datetime, timezone
 from flask_babel import get_locale
 from flask_login import current_user, login_required
@@ -205,11 +206,12 @@ def notifications():
         'timestamp': n.timestamp
     } for n in notifications]
 
+
 @bp.route('/export_posts')
 @login_required
 def export_posts():
     if current_user.get_task_in_progress('export_posts'):
-        flash('An export task is currently in progress')
+        flash(_('An export task is currently in progress'))
     else:
         current_user.launch_task('export_posts', _('Exporting posts...'))
         db.session.commit()

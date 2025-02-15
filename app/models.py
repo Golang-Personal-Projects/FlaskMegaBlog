@@ -134,6 +134,7 @@ class User(db.Model, UserMixin):
         query = self.tasks.select().where(Task.name == name, Task.complete == False)
         return db.session.scalar(query)
 
+
 @login.user_loader
 def load_user(id):
     return db.session.get(User, int(id))
@@ -230,7 +231,7 @@ class Task(db.Model):
     name: Mapped[str] = mapped_column(String(128), index=True)
     description: Mapped[Optional[str]] = mapped_column(String(128))
     user_id: Mapped[int] = mapped_column(ForeignKey(User.id))
-    complete: Mapped[bool] = mapped_column(default=True)
+    complete: Mapped[bool] = mapped_column(default=False)
     user: Mapped[User] = relationship(back_populates='tasks')
 
     def get_rq_job(self):
@@ -243,4 +244,3 @@ class Task(db.Model):
     def get_progress(self):
         job = self.get_rq_job()
         return job.meta.get('progress', 0) if job is not None else 100
-

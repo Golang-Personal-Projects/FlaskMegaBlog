@@ -1,4 +1,17 @@
 import sys
+import time
+from rq import get_current_job
+from app import create_app, db
+from app.models import Task, User, Post
+from sqlalchemy import func, select
+from flask import render_template
+from app.email import send_email
+import json
+
+app = create_app()
+app.app_context().push()
+
+
 # def example(seconds):
 #     print("Starting task")
 #     job = get_current_job()
@@ -11,19 +24,6 @@ import sys
 #     job.save_meta()
 #     print("Task completed")
 
-import time
-from rq import  get_current_job
-from app import create_app, db
-from app.models import Task, User, Post
-from sqlalchemy import func, select
-from flask import render_template
-from app.email import  sendmail
-import json
-
-
-app = create_app()
-app.app_context().push()
-
 def _set_task_progress(progress):
     job = get_current_job()
     if job:
@@ -35,31 +35,31 @@ def _set_task_progress(progress):
             task.complete = True
         db.session.commit()
 
+
 def export_posts(user_id):
     try:
         # read user posts from database
         user = db.session.get(User, user_id)
         _set_task_progress(0)
-        data =[]
+        data = []
         i = 0
         total_posts = db.session.scalar(select(func.count()).select_from(user.posts.select().subquery()))
         for post in db.session.scalars(user.posts.select().order_by(Post.timestamp.asc())):
             data.append({'body': post.body, 'timestamp': post.timestamp.isoformat() + 'Z'})
             time.sleep(5)
             i += 1
-            _set_task_progress(100 * i // total_posts )
+            _set_task_progress(100 * i // total_posts)
 
         # send mail with data to user
-        sendmail(
-            '[Microblog] Your blog posts',
-            sender=app.config['ADMINS'][0], recipients=[user.email],
-         #   text_body=render_template('email/export_posts.txt', user=user),
+        send_email(
+            subject='[Microblog] Your blog posts',
+            sender=app.config['ADMINS'][0],
+            recipients=[user.email],
+            text_body=render_template('email/export_posts.txt', user=user),
             html_body=render_template('email/export_posts.html', user=user),
-            attachments=[json.dumps({'posts': data}, indent=4)], sync=True)
-        #    attachments=[('posts.json', 'application/json', json.dumps({'posts': data}, indent=4))], sync=True)
-    except Exception as e:
+            attachments=[('posts.json', 'application/json', json.dumps({'posts': data}, indent=4))], sync=True)
+    except Exception:
         # handle unexpected errors
-        print("Exception: {}".format(e))
         _set_task_progress(100)
         app.logger.error('unhandled exception', exc_info=sys.exc_info)
     finally:

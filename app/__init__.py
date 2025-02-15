@@ -84,12 +84,14 @@ def create_app():
             auth = None
             if app.config["MAIL_USERNAME"] or app.config["MAIL_PASSWORD"]:
                 auth = (app.config["MAIL_USERNAME"] or app.config["MAIL_PASSWORD"])
+                print(auth)
             secure = None
-            if app.config["MAIL_USER_TLS"]:
+            if app.config["MAIL_USE_TLS"]:
                 secure = ()
             mail_handler = SMTPHandler(
                 mailhost=(app.config["MAIL_SERVER"], app.config["MAIL_PORT"]),
-                fromaddr="noreply@" + app.config["MAIL_SERVER"],
+                # fromaddr="noreply@" + app.config["MAIL_SERVER"],
+                fromaddr=app.config["ADMINS"][0],
                 toaddrs=app.config["ADMINS"], subject="Blog Log Failures",
                 credentials=auth, secure=secure)
             mail_handler.setLevel(logging.ERROR)
