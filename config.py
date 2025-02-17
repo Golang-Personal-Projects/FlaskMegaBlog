@@ -1,4 +1,4 @@
-import os
+import os, ast
 from dotenv import load_dotenv
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -14,7 +14,8 @@ class Config:
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') is not None
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    ADMINS = os.environ.get("ADMINS_EMAIL_ADDRESSES")
+    MAIL_DEFAULT_SENDER = os.environ.get("MAIL_DEFAULT_SENDER")
+    ADMINS = ast.literal_eval(os.environ.get("ADMINS_EMAIL_ADDRESSES"))
     SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
     POSTS_PER_PAGE = 3
     LANGUAGES = ["en", "es"]
@@ -22,3 +23,4 @@ class Config:
     MS_TRANSLATOR_API_ENDPOINT = "https://api.cognitive.microsofttranslator.com"
     ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL')
     LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
+    REDIS_URL = os.environ.get('REDIS_URL') or 'redis://'
