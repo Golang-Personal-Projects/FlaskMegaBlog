@@ -1,5 +1,4 @@
 import os.path
-
 import rq
 from flask import Flask, request
 from flask_login import LoginManager
@@ -73,6 +72,9 @@ def create_app():
 
     from app.command.cli import bp as cli_bp
     app.register_blueprint(cli_bp)
+
+    from app.api import bp as api_bp
+    app.register_blueprint(api_bp, url_prefix="/api")
 
     app.elasticsearch = Elasticsearch([app.config["ELASTICSEARCH_URL"]]) if app.config["ELASTICSEARCH_URL"] else None
 
